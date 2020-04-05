@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Scrabble
 {
     internal class Game
     {
-        private Dictionary<string, int> letterValues = new Dictionary<string, int>()
+        private static Random rand = new Random();
+
+        private static Dictionary<string, int> letterValues = new Dictionary<string, int>()
         {
             {"A E I O U L N S T R", 1 },
             {"D G", 2 },
@@ -14,6 +19,8 @@ namespace Scrabble
             {"J K", 8 },
             {"Q Z", 10 }
         };
+
+        private ArrayList letterBag = new ArrayList();
 
         private Dictionary<string, int> letterFrequency = new Dictionary<string, int>()
         {
@@ -43,10 +50,75 @@ namespace Scrabble
             {"X", 1 },
             {"Y", 2 },
             {"Z", 1 },
-            {"", 2 }
+            {" ", 2 },
+            {"None", 0 }
         };
 
 
+        public Game()
+        {
+            foreach(string key in letterFrequency.Keys)
+            {
+                for (int i = 0; i < letterFrequency[key]; i++)
+                    letterBag.Add(key);
+            }
+        }
+
+        
+
+        public static int getLetterValue(string letter)
+        {
+            foreach (KeyValuePair<string, int> kvp in letterValues)
+            {
+                if (kvp.Key.Contains(letter))
+                {
+                    return kvp.Value;
+                }
+            }
+            return -1;
+        }
+
+        public string[] drawTiles(int count)
+        {
+            string[] tiles = new string[count];
+            string letter = "None";
+            for (int i = 0; i < count; i++)
+            {
+                while (letterFrequency[letter] == 0 && letterBag.Count > 0) {
+                    letter = letterBag[rand.Next(letterBag.Count)].ToString();
+                    if (letter != "None" && letterFrequency[letter] == 0)
+                    {
+                        letterBag.Remove(letter);
+                    }
+                }
+                tiles[i] = letter;
+                Decrement(letterFrequency, letter);
+            }
+            return tiles;
+        }
+
+        public void addTiles(string[] tiles)
+        {
+            foreach(string tile in tiles)
+            {
+                Increment(letterFrequency, tile);
+                letterBag.Add(tile);
+            }
+        }
+
+        private static void Increment<T>(Dictionary<T, int> dictionary, T key)
+        {
+            int count;
+            dictionary.TryGetValue(key, out count);
+            dictionary[key] = count + 1;
+        }
+
+        private static void Decrement<T>(Dictionary<T, int> dictionary, T key)
+        {
+            int count;
+            dictionary.TryGetValue(key, out count);
+            dictionary[key] = count - 1;
+        }
 
     }
 }

@@ -12,9 +12,14 @@ namespace Scrabble
         private int turns;
 
 
-        public Player()
+        public Player(string name)
         {
+            this.name = name;
+        }
 
+        public string getName()
+        {
+            return name;
         }
     }
 }
