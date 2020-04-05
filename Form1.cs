@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace Scrabble
@@ -12,12 +13,9 @@ namespace Scrabble
         {
             InitializeComponent();
         }
-        private void Button_MouseClick(object sender, EventArgs e)
-        {
-            Button btn = (Button)sender;
-            MessageBox.Show(btn.Text, "");
-        }
-
+        bool DragAndDropInProgress = false;
+        bool DragAndDropCompleted = false;
+        Button currentTile;
 
         public string run_cmd(string cmd, string args)
         {
@@ -42,16 +40,46 @@ namespace Scrabble
         public bool checkWord(string word)
         {
             string result = run_cmd(@"C:\Users\Mrah\PycharmProjects\WordChecker\CheckWord.py", "\"" + word + "\"");
-
+        
             return String.Equals(result.ToLower().Trim(), "true");
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             BoardHandler bh = new BoardHandler();
-            bh.GenerateBoard(pnlBoard, Button_MouseClick);
+            bh.GenerateBoard(pnlBoard, Button_DragEnter, Button_DragDrop);
             MessageBox.Show(checkWord("Uwu").ToString(), "");
         }
+
+
+        private void btnHandOne_MouseDown(object sender, MouseEventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.DoDragDrop(btn.Text, DragDropEffects.Copy);
+            
+        }
+
+        private void Button_DragDrop(object sender, DragEventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
+            btn.AllowDrop = false;
+
+        }
+
+        private void Button_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.StringFormat))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+
+            }
+        }
+
+
     }
 }

@@ -22,3 +22,4 @@ C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.csproj.CoreCompi
 C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.csproj.CopyComplete
 C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.exe
 C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.pdb
+C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.csprojAssemblyReference.cache

@@ -12,7 +12,7 @@ namespace Scrabble
         static Button[,] board;
         static int cardCellWidth;
         static int cardCellHeight;
-        const int padding = 2;
+        const int padding = 1;
         const int boardDimensions = 15; //X by X board size
         static Color boardColor = ColorTranslator.FromHtml("#C3BCA0");
         //Selects the first true result based on key function and returns that keys value - 'Double Letter' is mostly harded coded
@@ -41,7 +41,7 @@ namespace Scrabble
 
 
 
-        public Button[,] GenerateBoard(Panel pnlBoard, Action<object, EventArgs> mouseClick)
+        public Button[,] GenerateBoard(Panel pnlBoard, Action<object, DragEventArgs> dragEnter, Action<object, DragEventArgs> dragDrop)
         {
             cardCellWidth = (pnlBoard.Size.Width / boardDimensions) - (padding);
             cardCellHeight = (pnlBoard.Size.Height / boardDimensions) - (padding);
@@ -62,7 +62,8 @@ namespace Scrabble
                         Font = new Font("Arial", 8, FontStyle.Bold),
                         Name = "btn" + row.ToString() + col.ToString(),
                         Tag = getTileValue(row, col).ToString(),
-                        Enabled = true
+                        Enabled = true,
+                        AllowDrop = true
                     };
 
                     var key = specialTiles.Keys.First(tileValue => tileValue(getTileValue(row, col)));
@@ -73,7 +74,8 @@ namespace Scrabble
                     }
                     
                     //Associates the same event handler with each of the buttons generated
-                    board[row, col].MouseClick += new MouseEventHandler(mouseClick);
+                    board[row, col].DragEnter += new DragEventHandler(dragEnter);
+                    board[row, col].DragDrop += new DragEventHandler(dragDrop);
                     // Add button to the form
                     pnlBoard.Controls.Add(board[row, col]);
 
@@ -149,5 +151,8 @@ namespace Scrabble
             return neighbors;
 
         }
+
+
+
     }
 }
