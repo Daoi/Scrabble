@@ -6,8 +6,13 @@ namespace Scrabble
 {
     public partial class Form1 : Form
     {
-        Button[] currentHand;
+        //Store the current players hand at the start of their turn
+        Button[] handAtTurnStart;
+        //The tile currently being manipulated by the player
         Button currentTile;
+        int currentTileValue;
+        string currentTileLetter;
+        //
 
         public Form1()
         {
@@ -16,10 +21,13 @@ namespace Scrabble
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Create the board
             BoardHandler bh = new BoardHandler();
             bh.GenerateBoard(pnlBoard, Button_DragEnter, Button_DragDrop);
+            //Add drag and drop functionality to tile hand buttons
             pnlTiles.Controls.OfType<Button>().ToList().ForEach(btn => btn.MouseDown += Button_MouseDown); 
-            MessageBox.Show(WordChecker.checkWord("Test").ToString(), "");
+            //
+            //MessageBox.Show(WordChecker.checkWord("Test").ToString(), "");
         }
 
         //Drag and Drop Functionallity Begin
@@ -27,6 +35,8 @@ namespace Scrabble
         {
             Button btn = sender as Button;
             currentTile = btn;
+            currentTileLetter = btn.Text;
+            currentTileValue = LetterTiles.getLetterValue(currentTileLetter);
             btn.DoDragDrop(btn.Text, DragDropEffects.Copy);
             
         }

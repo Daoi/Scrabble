@@ -15,7 +15,7 @@ namespace Scrabble
         const int padding = 1;
         const int boardDimensions = 15; //X by X board size
         static Color boardColor = ColorTranslator.FromHtml("#C3BCA0");
-        //Selects the first true result based on key function and returns that keys value - 'Double Letter' is mostly harded coded
+        //Selects the first true result based on key function and returns that keys value - 'Double Letter Score' is mostly just manually setting indexes
         //Why? For the same reason I'm making Scrabble in a windows form app, I'm a moron
         Dictionary<Func<int, bool>, string> specialTiles = new Dictionary<Func<int, bool>, string>()
         {
@@ -99,17 +99,11 @@ namespace Scrabble
             return board;
         }
 
-        private int getTileValue(int row, int col)
-        {
-
-            return (row * 15) + col;
-        }
-
         private static bool SetDoubleLetterScores(int tile)
         {
             int row = tile / 15;
             int col = tile % 15;
-            //Check if the tile is within 3 of a Triple Word score forward, backwards, up, or down
+            //Check if the tile is within 3 vertically or 4 horizontally of a Triple Word score forward, backwards, up, or down
 
             ArrayList neighbors = getNeighbors(row, col, boardDimensions - 1, boardDimensions - 1);
             
@@ -118,10 +112,7 @@ namespace Scrabble
                 if (board[cords[0], cords[1]].Text == "Triple Word Score")
                     return true;
             }
-
             return false;
-       
-
         }
 
         private static ArrayList getNeighbors(int x, int y, int maxX, int maxY)
@@ -147,12 +138,9 @@ namespace Scrabble
                 if (y + 3 <= maxY)
                     neighbors.Add(new int[] { x, y + 3 });
             }
-
             return neighbors;
-
         }
-
-
-
+  
+        private int getTileValue(int row, int col) { return (row * 15) + col; }
     }
 }
