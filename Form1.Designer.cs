@@ -81,7 +81,6 @@
             this.btnHandOne.TabIndex = 0;
             this.btnHandOne.Text = "A";
             this.btnHandOne.UseVisualStyleBackColor = true;
-            this.btnHandOne.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnHandOne_MouseDown);
             // 
             // timerDragAndDrop
             // 
