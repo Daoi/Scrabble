@@ -1,10 +1,12 @@
-﻿namespace Scrabble
+﻿using System.Windows.Forms;
+
+namespace Scrabble
 {
     internal class Player
     {
 
         private string name;
-        private LetterTiles hand;
+        private string[] currentHand;
         private int score;
         private int words;
         private int turns;
