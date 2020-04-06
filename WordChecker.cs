@@ -2,7 +2,9 @@
 {
     using System.IO;
     using System.Diagnostics;
-
+    using System.Windows.Forms;
+    using System.Text;
+    using System.Collections.Generic;
 
     internal class WordChecker
     {
@@ -26,11 +28,105 @@
             }
         }
 
-        public static bool checkWord(string word)
+        public static bool CheckWord(string word)
         {
             string result = run_cmd(@"C:\Users\Mrah\PycharmProjects\WordChecker\CheckWord.py", "\"" + word + "\"");
 
             return string.Equals(result.ToLower().Trim(), "true");
         }
+
+
+        public static HashSet<string> VerifyBoard(Button[,] btns, List<int> placements)
+        {
+            HashSet<string> words = new HashSet<string>();
+            foreach (int tileIndex in placements)
+            {
+                words.Add(CheckHorizontal(btns, tileIndex));
+                words.Add(CheckVertical(btns, tileIndex));
+            }
+
+            foreach(string word in words)
+            {
+                if (!CheckWord(word))
+                {
+                    word.Insert(word.Length, "!");
+                } 
+            }
+            return words;
+        }
+
+        private static string CheckHorizontal(Button[,] btns, int tileIndex)
+        {
+            StringBuilder sb = new StringBuilder();
+            int[] indicies = BoardHandler.getRowCol(tileIndex);
+            int row = indicies[0];
+            int col = indicies[1];
+            int max = 14, min = 0;
+            //Right
+            sb.Append(btns[row, col].Text);
+            for(int i = col; i < max; i++)
+            {
+                if(btns[row,col].Text != "")
+                {
+                    sb.Append(btns[row, i].Text);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            //Left
+            for (int i = col; i >= min; i--)
+            {
+                if (btns[row, i].Text != "")
+                {
+                    sb.Insert(0, btns[row, i].Text);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private static string CheckVertical(Button[,] btns, int tileIndex)
+        {
+            StringBuilder sb = new StringBuilder();
+            int[] indicies = BoardHandler.getRowCol(tileIndex);
+            int row = indicies[0];
+            int col = indicies[1];
+            int max = 14, min = 0;
+            //Down
+            sb.Append(btns[row, col].Text);
+            for (int i = row; i < max; i++)
+            {
+                if (btns[row, col].Text != "")
+                {
+                    sb.Append(btns[i, col].Text);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            //Up
+            for (int i = row; i >= min; i--)
+            {
+                if (btns[row, i].Text != "")
+                {
+                    sb.Insert(0, btns[i, col].Text);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+
     }
 }

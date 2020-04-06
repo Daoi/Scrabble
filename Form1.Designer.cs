@@ -144,6 +144,7 @@
             this.btnEndTurn.TabIndex = 2;
             this.btnEndTurn.Text = "End Turn";
             this.btnEndTurn.UseVisualStyleBackColor = true;
+            this.btnEndTurn.Click += new System.EventHandler(this.btnEndTurn_Click);
             // 
             // btnResetTurn
             // 

@@ -141,6 +141,7 @@ namespace Scrabble
             return neighbors;
         }
   
-        private int getTileValue(int row, int col) { return (row * 15) + col; }
+        private static int getTileValue(int row, int col) { return (row * 15) + col; }
+        public static int[] getRowCol(int tileIndex){return new int[2]{ tileIndex / 15, tileIndex % 15 };}
     }
 }

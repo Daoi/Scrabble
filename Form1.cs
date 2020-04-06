@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Scrabble
@@ -19,6 +20,7 @@ namespace Scrabble
         Button currentTile;
         int currentTileValue;
         string currentTileLetter;
+        List<int> placements = new List<int>();
         //
 
         public Form1()
@@ -38,6 +40,7 @@ namespace Scrabble
             //MessageBox.Show(WordChecker.checkWord("Test").ToString(), "");
             DetermineTurnOrder();
             boardAtTurnStart = SaveState(pnlBoard);
+            handAtTurnStart = SaveState(pnlTiles);
             MessageBox.Show("Derp");
             
         }
@@ -58,6 +61,7 @@ namespace Scrabble
             Button btn = (Button)sender;
             btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
             btn.AllowDrop = false;
+            placements.Add(int.Parse(btn.Tag.ToString()));
             currentTile.Text = "";
 
         }
@@ -109,15 +113,42 @@ namespace Scrabble
 
         private void btnResetTurn_Click(object sender, EventArgs e)
         {
+            resetBoard();
+        }
+
+        private void resetBoard()
+        {
             List<Button> boardTiles = pnlBoard.Controls.OfType<Button>().ToList();
             List<Button> handTiles = pnlTiles.Controls.OfType<Button>().ToList();
             for (int i = 0; i < boardAtTurnStart.Count; i++)
             {
                 boardTiles[i].Text = boardAtTurnStart[i].ToString();
+                //boardTiles[i].AllowDrop = boardAtTurnStart[i].AllowDrop;
             }
             for (int i = 0; i < handAtTurnStart.Count; i++)
             {
                 boardTiles[i].Text = handAtTurnStart[i].ToString();
+            }
+        }
+
+        private void btnEndTurn_Click(object sender, EventArgs e)
+        {
+
+            HashSet<string> words = WordChecker.VerifyBoard(gameBoard, placements);
+            StringBuilder invalidWords = new StringBuilder("The following invalid words were found: "); 
+            foreach(string word in words)
+            {
+                if (word.Contains("!"))
+                {
+                    invalidWords.Append(word.TrimEnd('!'));
+                    invalidWords.Append("," + "\r\n");
+                }
+            }
+            
+            if (invalidWords.Length > 0)
+            {
+                MessageBox.Show(invalidWords.ToString().TrimEnd(',') + "\r\n Retake your turn." , "Invalid Words");
+                resetBoard();
             }
         }
     }
