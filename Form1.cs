@@ -4,18 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Scrabble
 {
     public partial class Form1 : Form
     {
+        BinaryFormatter formatter = new BinaryFormatter();
         Game currentGame = new Game();
         Player playerOne = new Player("p1");
         Player playerTwo = new Player("p2");
+        Button[,] gameBoard = new Button[15, 15];
         //Store the current players hand and the board at the start of turn
-        ArrayList handAtTurnStart;
-        ArrayList boardAtTurnStart;
-        Button[,] gameBoard;
+        Dictionary<Button, string> handAtTurnStart = new Dictionary<Button, string>();
+        Dictionary<Button, string> boardAtTurnStart = new Dictionary<Button, string>();
         //The tile currently being manipulated by the player
         Button currentTile;
         int currentTileValue;
@@ -39,8 +43,6 @@ namespace Scrabble
             //
             //MessageBox.Show(WordChecker.checkWord("Test").ToString(), "");
             DetermineTurnOrder();
-            boardAtTurnStart = SaveState(pnlBoard);
-            handAtTurnStart = SaveState(pnlTiles);
             MessageBox.Show("Derp");
             
         }
@@ -50,7 +52,7 @@ namespace Scrabble
         {
             Button btn = sender as Button;
             currentTile = btn;
-            currentTileLetter = btn.Text;
+            currentTileLetter = btn.Text.ToString();
             currentTileValue = LetterTiles.getLetterValue(currentTileLetter);
             btn.DoDragDrop(btn.Text, DragDropEffects.Copy);
             
@@ -59,10 +61,19 @@ namespace Scrabble
         private void Button_DragDrop(object sender, DragEventArgs e)
         {
             Button btn = (Button)sender;
+            int[] index = BoardHandler.getRowCol(int.Parse(btn.Tag.ToString()));
+            if (!BoardHandler.CheckAdjacent(index[0], index[1], 14, 14, gameBoard))
+            {
+                e.Effect = DragDropEffects.None;
+                return;
+            }
+            boardAtTurnStart.Add(btn, btn.Text);
+            handAtTurnStart.Add(currentTile, currentTile.Text);
             btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
             btn.AllowDrop = false;
             placements.Add(int.Parse(btn.Tag.ToString()));
             currentTile.Text = "";
+            
 
         }
 
@@ -104,12 +115,6 @@ namespace Scrabble
             }
         }
 
-        public ArrayList SaveState(Panel pnl)
-        {
-            ArrayList values = new ArrayList();
-            pnl.Controls.OfType<Button>().ToList().ForEach(btn => values.Add(btn.Text));
-            return values;
-        }
 
         private void btnResetTurn_Click(object sender, EventArgs e)
         {
@@ -118,38 +123,43 @@ namespace Scrabble
 
         private void resetBoard()
         {
-            List<Button> boardTiles = pnlBoard.Controls.OfType<Button>().ToList();
-            List<Button> handTiles = pnlTiles.Controls.OfType<Button>().ToList();
-            for (int i = 0; i < boardAtTurnStart.Count; i++)
+            foreach (Button boardTile in boardAtTurnStart.Keys)
             {
-                boardTiles[i].Text = boardAtTurnStart[i].ToString();
-                //boardTiles[i].AllowDrop = boardAtTurnStart[i].AllowDrop;
+                boardTile.Text = boardAtTurnStart[boardTile];
+                boardTile.AllowDrop = true;
             }
-            for (int i = 0; i < handAtTurnStart.Count; i++)
+            foreach (Button handTile in handAtTurnStart.Keys)
             {
-                boardTiles[i].Text = handAtTurnStart[i].ToString();
+                handTile.Text = handAtTurnStart[handTile];
             }
+
+            handAtTurnStart = new Dictionary<Button, string>();
+            boardAtTurnStart = new Dictionary<Button, string>();
         }
 
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
 
-            HashSet<string> words = WordChecker.VerifyBoard(gameBoard, placements);
-            StringBuilder invalidWords = new StringBuilder("The following invalid words were found: "); 
-            foreach(string word in words)
+            string words = WordChecker.VerifyBoard(gameBoard, placements);
+            StringBuilder invalidWords = new StringBuilder("The following invalid words were found: ");
+            if (words.Contains("!"))
             {
-                if (word.Contains("!"))
+                string[] split = words.Split(' ');
+                foreach(string str in split)
                 {
-                    invalidWords.Append(word.TrimEnd('!'));
-                    invalidWords.Append("," + "\r\n");
+                    if (str.Contains("!"))
+                    {
+                        invalidWords.Append(str.TrimEnd('!') + " ");
+                    }
                 }
+
+                MessageBox.Show(invalidWords.ToString() + " please retake your turn.");
+            }
+            else
+            {
+                MessageBox.Show("The following words were formed: " + words, "Words formed and score");
             }
             
-            if (invalidWords.Length > 0)
-            {
-                MessageBox.Show(invalidWords.ToString().TrimEnd(',') + "\r\n Retake your turn." , "Invalid Words");
-                resetBoard();
-            }
         }
     }
 }

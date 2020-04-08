@@ -140,7 +140,23 @@ namespace Scrabble
             }
             return neighbors;
         }
-  
+
+        public static bool CheckAdjacent(int x, int y, int maxX, int maxY, Button[,] board)
+        {
+            if (string.Equals(board[x, y].Text, "*")) return true;
+
+            return (x - 1 >= 0 && CheckForValidTile(x - 1, y, board)) ||
+                   (x + 1 <= maxX && CheckForValidTile(x + 1, y, board)) ||
+                   (y - 1 >= 0 && CheckForValidTile(x, y - 1, board)) ||
+                   (y + 1 <= maxY && CheckForValidTile(x, y + 1, board));
+ 
+        }
+
+        private static bool CheckForValidTile(int x, int y, Button[,] board)
+        {
+            return (!string.IsNullOrEmpty(board[x, y].Text) && board[x, y].Text.Length == 1 && board[x,y].Text != "*");
+        }
+
         private static int getTileValue(int row, int col) { return (row * 15) + col; }
         public static int[] getRowCol(int tileIndex){return new int[2]{ tileIndex / 15, tileIndex % 15 };}
     }

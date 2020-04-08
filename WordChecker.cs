@@ -30,29 +30,38 @@
 
         public static bool CheckWord(string word)
         {
-            string result = run_cmd(@"C:\Users\Mrah\PycharmProjects\WordChecker\CheckWord.py", "\"" + word + "\"");
 
+            string result = run_cmd(@"C:\Users\Mrah\PycharmProjects\WordChecker\CheckWord.py", "\"" + word + "\"");
+            MessageBox.Show(result);
             return string.Equals(result.ToLower().Trim(), "true");
         }
 
 
-        public static HashSet<string> VerifyBoard(Button[,] btns, List<int> placements)
+        public static string VerifyBoard(Button[,] btns, List<int> placements)
         {
+            StringBuilder sb = new StringBuilder();
             HashSet<string> words = new HashSet<string>();
             foreach (int tileIndex in placements)
             {
-                words.Add(CheckHorizontal(btns, tileIndex));
-                words.Add(CheckVertical(btns, tileIndex));
+               words.Add(CheckHorizontal(btns, tileIndex));
+               words.Add(CheckVertical(btns, tileIndex));
             }
-
+            
             foreach(string word in words)
             {
+                if (word.Length < 2)
+                    continue;
+
                 if (!CheckWord(word))
                 {
-                    word.Insert(word.Length, "!");
-                } 
+                    sb.Append(word + "! ");
+                }
+                else
+                {
+                    sb.Append(word + " ");
+                }
             }
-            return words;
+            return sb.ToString();
         }
 
         private static string CheckHorizontal(Button[,] btns, int tileIndex)
@@ -63,32 +72,38 @@
             int col = indicies[1];
             int max = 14, min = 0;
             //Right
-            sb.Append(btns[row, col].Text);
             for(int i = col; i < max; i++)
             {
-                if(btns[row,col].Text != "")
+                if(string.IsNullOrEmpty(btns[row,i].Text) || btns[row, i].Text.Length > 1)
+                {
+                    break;
+                }
+                else
                 {
                     sb.Append(btns[row, i].Text);
                 }
-                else
-                {
-                    break;
-                }
             }
             //Left
-            for (int i = col; i >= min; i--)
+            for (int i = col - 1; i >= min; i--)
             {
-                if (btns[row, i].Text != "")
+                if (string.IsNullOrEmpty(btns[row, i].Text) || btns[row, i].Text.Length > 1)
                 {
-                    sb.Insert(0, btns[row, i].Text);
+                    break;
                 }
                 else
                 {
-                    break;
+                   sb.Insert(0, btns[row, i].Text);
                 }
             }
 
-            return sb.ToString();
+            if (sb.ToString().Length > 1)
+            {
+                return sb.ToString();
+            }
+            else
+            {
+                return "";
+            }
         }
 
         private static string CheckVertical(Button[,] btns, int tileIndex)
@@ -99,32 +114,38 @@
             int col = indicies[1];
             int max = 14, min = 0;
             //Down
-            sb.Append(btns[row, col].Text);
             for (int i = row; i < max; i++)
             {
-                if (btns[row, col].Text != "")
+                if (string.IsNullOrEmpty(btns[i, col].Text) || btns[i, col].Text.Length > 1)
+                {
+                    break;
+                }
+                else
                 {
                     sb.Append(btns[i, col].Text);
                 }
-                else
+            }
+            //Up
+            for (int i = row - 1; i >= min; i--)
+            {
+                if (string.IsNullOrEmpty(btns[i, col].Text) || btns[i, col].Text.Length > 1)
                 {
                     break;
                 }
-            }
-            //Up
-            for (int i = row; i >= min; i--)
-            {
-                if (btns[row, i].Text != "")
+                else
                 {
                     sb.Insert(0, btns[i, col].Text);
                 }
-                else
-                {
-                    break;
-                }
             }
 
-            return sb.ToString();
+            if (sb.ToString().Length > 1)
+            {
+                return sb.ToString();
+            }
+            else
+            {
+                return "";
+            }
         }
 
 
