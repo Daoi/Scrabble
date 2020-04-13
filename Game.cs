@@ -81,12 +81,12 @@ namespace Scrabble
         public string[] drawTiles(int count)
         {
             string[] tiles = new string[count];
-            string letter = "None";
             for (int i = 0; i < count; i++)
             {
+                string letter = "None";
                 while (letterFrequency[letter] == 0 && letterBag.Count > 0) {
                     letter = letterBag[rand.Next(letterBag.Count)].ToString();
-                    if (letter != "None" && letterFrequency[letter] == 0)
+                    if (letter != "None" && letterFrequency[letter] > 0)
                     {
                         letterBag.Remove(letter);
                     }

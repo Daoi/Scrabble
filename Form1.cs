@@ -92,7 +92,8 @@ namespace Scrabble
             }
         }
         //Drag and Drop funtionallity End
-
+        
+        //Move to Game class probably
         public void DetermineTurnOrder()
         {
             string firstTile = currentGame.drawTiles(1)[0];
@@ -139,10 +140,10 @@ namespace Scrabble
 
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
-
             string words = WordChecker.VerifyBoard(gameBoard, placements);
             StringBuilder invalidWords = new StringBuilder("The following invalid words were found: ");
-            if (words.Contains("!"))
+
+            if (words.Contains("!"))//Turn unsuccesful, inform player of incorrect words.
             {
                 string[] split = words.Split(' ');
                 foreach(string str in split)
@@ -155,9 +156,16 @@ namespace Scrabble
 
                 MessageBox.Show(invalidWords.ToString() + " please retake your turn.");
             }
-            else
+            else//Turn succuesful, draw new tiles and save hand. Calculate Score. 
             {
                 MessageBox.Show("The following words were formed: " + words, "Words formed and score");
+                List<Button> emptyTiles = pnlTiles.Controls.OfType<Button>().ToList().FindAll(btn => btn.Text.Equals(""));
+                string[] newTiles = currentGame.drawTiles(emptyTiles.Count);
+                for(int i = 0; i < newTiles.Length; i++)
+                {
+                    emptyTiles[i].Text = newTiles[i];
+                }
+            
             }
             
         }
