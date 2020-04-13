@@ -25,7 +25,7 @@ namespace Scrabble
         {x => x % 15 + x / 15 == 14 && ((x / 15 <= 13 && x / 15 >= 10) ||(x / 15 <= 4 && x / 15 >= 1)), "Double Word Score" },//Bottom left to top right diags sum to 14, then we select rows
         {x => (x % 15 == 9 || x % 15 == 5) && (x / 15 == 1 || x / 15 == 5 || x / 15 == 9 || x / 15 == 13), "Triple Letter Score"},//Triple letter score tiles are in the 5th or 9th col index, then select rows.
         {x => (x % 15 == 1 || x % 15 == 13) && (x / 15 == 5 || x / 15 == 9), "Triple Letter Score"},//Triple letter score tiles are in the 1st or 13th col index, then select rows
-        {x => x - 10 == 112 || x - 20 == 112 || x + 10 == 112 || x + 20 == 112 || x + 14 == 112 || x + 16 == 112 || x - 14 == 112 || x - 16 == 112, "Double Letter Score" },//Distance from center
+        {x => SetDoubleLetterScores(x), "Double Letter Score" },
         {x => x /1 == x, "" }//Regular tiles
         };
 
@@ -81,16 +81,10 @@ namespace Scrabble
 
                 }//One Row Complete 
             }//Done
-
+            
+            //Colors
             foreach (Button btn in board)
             {
-                //Double Letter Score Tiles
-                int tileValue = int.Parse(btn.Tag.ToString());
-                if (SetDoubleLetterScores(tileValue))
-                {
-                    btn.Text = "Double Letter Score";
-                }
-                //Colors
                 if (tileColors.ContainsKey(btn.Text))
                 {
                     btn.BackColor = tileColors[btn.Text];
@@ -98,48 +92,15 @@ namespace Scrabble
             }
             return board;
         }
-
+            
         private static bool SetDoubleLetterScores(int tile)
         {
-            int row = tile / 15;
-            int col = tile % 15;
-            //Check if the tile is within 3 vertically or 4 horizontally of a Triple Word score forward, backwards, up, or down
-
-            ArrayList neighbors = getNeighbors(row, col, boardDimensions - 1, boardDimensions - 1);
-            
-            foreach (int[] cords in neighbors)
-            {
-                if (board[cords[0], cords[1]].Text == "Triple Word Score")
-                    return true;
-            }
-            return false;
+            int[] doubleLetterTiles = { 3, 11, 36, 38, 45, 52, 59, 92, 96, 98, 102, 108, 116,
+                                       122, 126, 128, 132, 165, 172, 179, 186, 188, 213, 221 };
+            return doubleLetterTiles.Contains(tile);
         }
 
-        private static ArrayList getNeighbors(int x, int y, int maxX, int maxY)
-        {
-            ArrayList neighbors = new ArrayList();
-            if (x > 7)
-            {
-                if (x - 4 >= 0)
-                    neighbors.Add(new int[] { x - 4, y });
-            }
-            if (x < 7)
-            {
-                if (x + 4 <= maxX)
-                    neighbors.Add(new int[] { x + 4, y });
-            }
-            if (y < 7)
-            {
-                if (y - 3 >= 0)
-                    neighbors.Add(new int[] { x, y - 3 });
-            }
-            if (y > 7)
-            {
-                if (y + 3 <= maxY)
-                    neighbors.Add(new int[] { x, y + 3 });
-            }
-            return neighbors;
-        }
+
 
         public static bool CheckAdjacent(int x, int y, int maxX, int maxY, Button[,] board)
         {
