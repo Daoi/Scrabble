@@ -45,6 +45,7 @@
             this.lblScores = new System.Windows.Forms.Label();
             this.lblPlayerOneScore = new System.Windows.Forms.Label();
             this.lblPlayerTwoScore = new System.Windows.Forms.Label();
+            this.lblCurrentPlayersTurn = new System.Windows.Forms.Label();
             this.pnlTiles.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,7 +76,6 @@
             this.btnHandSeven.Name = "btnHandSeven";
             this.btnHandSeven.Size = new System.Drawing.Size(40, 40);
             this.btnHandSeven.TabIndex = 6;
-            this.btnHandSeven.Text = "E";
             this.btnHandSeven.UseVisualStyleBackColor = true;
             // 
             // btnHandSix
@@ -84,7 +84,6 @@
             this.btnHandSix.Name = "btnHandSix";
             this.btnHandSix.Size = new System.Drawing.Size(40, 40);
             this.btnHandSix.TabIndex = 5;
-            this.btnHandSix.Text = "E";
             this.btnHandSix.UseVisualStyleBackColor = true;
             // 
             // btnHandFive
@@ -93,7 +92,6 @@
             this.btnHandFive.Name = "btnHandFive";
             this.btnHandFive.Size = new System.Drawing.Size(40, 40);
             this.btnHandFive.TabIndex = 4;
-            this.btnHandFive.Text = "E";
             this.btnHandFive.UseVisualStyleBackColor = true;
             // 
             // btnHandFour
@@ -102,7 +100,6 @@
             this.btnHandFour.Name = "btnHandFour";
             this.btnHandFour.Size = new System.Drawing.Size(40, 40);
             this.btnHandFour.TabIndex = 3;
-            this.btnHandFour.Text = "E";
             this.btnHandFour.UseVisualStyleBackColor = true;
             // 
             // btnHandThree
@@ -111,7 +108,6 @@
             this.btnHandThree.Name = "btnHandThree";
             this.btnHandThree.Size = new System.Drawing.Size(40, 40);
             this.btnHandThree.TabIndex = 2;
-            this.btnHandThree.Text = "E";
             this.btnHandThree.UseVisualStyleBackColor = true;
             // 
             // btnHandTwo
@@ -120,7 +116,6 @@
             this.btnHandTwo.Name = "btnHandTwo";
             this.btnHandTwo.Size = new System.Drawing.Size(40, 40);
             this.btnHandTwo.TabIndex = 1;
-            this.btnHandTwo.Text = "T";
             this.btnHandTwo.UseVisualStyleBackColor = true;
             // 
             // btnHandOne
@@ -129,7 +124,6 @@
             this.btnHandOne.Name = "btnHandOne";
             this.btnHandOne.Size = new System.Drawing.Size(40, 40);
             this.btnHandOne.TabIndex = 0;
-            this.btnHandOne.Text = "A";
             this.btnHandOne.UseVisualStyleBackColor = true;
             // 
             // timerDragAndDrop
@@ -192,11 +186,21 @@
             this.lblPlayerTwoScore.TabIndex = 7;
             this.lblPlayerTwoScore.Text = "0";
             // 
+            // lblCurrentPlayersTurn
+            // 
+            this.lblCurrentPlayersTurn.AutoSize = true;
+            this.lblCurrentPlayersTurn.Location = new System.Drawing.Point(13, 652);
+            this.lblCurrentPlayersTurn.Name = "lblCurrentPlayersTurn";
+            this.lblCurrentPlayersTurn.Size = new System.Drawing.Size(35, 13);
+            this.lblCurrentPlayersTurn.TabIndex = 8;
+            this.lblCurrentPlayersTurn.Text = "label1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1102, 713);
+            this.Controls.Add(this.lblCurrentPlayersTurn);
             this.Controls.Add(this.lblPlayerTwoScore);
             this.Controls.Add(this.lblPlayerOneScore);
             this.Controls.Add(this.lblScores);
@@ -232,6 +236,7 @@
         private System.Windows.Forms.Label lblScores;
         private System.Windows.Forms.Label lblPlayerOneScore;
         private System.Windows.Forms.Label lblPlayerTwoScore;
+        private System.Windows.Forms.Label lblCurrentPlayersTurn;
     }
 
 }

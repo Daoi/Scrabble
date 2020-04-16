@@ -32,19 +32,19 @@
         {
 
             string result = run_cmd(@"C:\Users\Mrah\PycharmProjects\WordChecker\CheckWord.py", "\"" + word + "\"");
-            MessageBox.Show(result);
+            //MessageBox.Show(result);
             return string.Equals(result.ToLower().Trim(), "true");
         }
 
 
-        public static string VerifyBoard(Button[,] btns, List<int> placements)
+        public static string VerifyBoard(Button[,] board, List<int> placements)
         {
             StringBuilder sb = new StringBuilder();
             HashSet<string> words = new HashSet<string>();
             foreach (int tileIndex in placements)
             {
-               words.Add(CheckHorizontal(btns, tileIndex));
-               words.Add(CheckVertical(btns, tileIndex));
+               words.Add(CheckHorizontal(board, tileIndex));
+               words.Add(CheckVertical(board, tileIndex));
             }
             
             foreach(string word in words)
