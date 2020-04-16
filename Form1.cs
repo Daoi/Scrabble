@@ -39,8 +39,7 @@ namespace Scrabble
             //Add drag and drop functionality to tile hand buttons
             pnlTiles.Controls.OfType<Button>().ToList().ForEach(btn => btn.MouseDown += Button_MouseDown);
             //
-            //MessageBox.Show(WordChecker.checkWord("Test").ToString(), "");
-            DetermineTurnOrder();
+            currentPlayer = Game_Rules.TurnOrder.DetermineTurnOrder(playerOne, playerTwo, currentGame);
             playerOne.DrawFirstHand(currentGame);
             playerTwo.DrawFirstHand(currentGame);
             FirstTurn();
@@ -93,31 +92,7 @@ namespace Scrabble
         //Drag and Drop funtionallity End
         
         //Move to Game class probably
-        public void DetermineTurnOrder(Player playerOne, Player playerTwo)
-        {
-            Player result;
-            string firstTile = currentGame.drawTiles(1)[0];
-            string secondTile = currentGame.drawTiles(1)[0];
-            currentGame.addTiles(new string[2] { firstTile, secondTile });
 
-            if (firstTile.ToCharArray()[0] - 64 < secondTile.ToCharArray()[0] - 64)
-            {
-                if (firstTile == " ") firstTile = "the blank tile";
-                MessageBox.Show($"{playerOne.GetName()} drew {firstTile}, {playerTwo.GetName()} drew {secondTile}. {playerOne.GetName()} will go first.", "Turn Order");
-                result = playerOne;
-            }
-            else if (firstTile.ToCharArray()[0] - 64 > secondTile.ToCharArray()[0] - 64)
-            {
-                if (secondTile == " ") secondTile = "the blank tile";
-                MessageBox.Show($"{playerOne.GetName()} drew {firstTile}, {playerTwo.GetName()} drew {secondTile}. {playerTwo.GetName()} will go first.", "Turn Order");
-                result = playerTwo;
-            }
-            else if (firstTile.ToCharArray()[0] - 64 == secondTile.ToCharArray()[0] - 64)
-            {
-                MessageBox.Show($"Players drew the same letter, {playerOne.GetName()} will go first", "Turn Order");
-                result = playerOne;
-            }
-        }
 
 
         private void btnResetTurn_Click(object sender, EventArgs e)
@@ -143,7 +118,7 @@ namespace Scrabble
 
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
-            string words = Verification.WordChecker.VerifyBoard(gameBoard, placements);
+            string words = Verification.VerifyBoardState.VerifyBoard(gameBoard, placements);
             StringBuilder invalidWords = new StringBuilder("The following invalid words were found: ");
 
             if (words.Contains("!"))//Turn unsuccesful, inform player of incorrect words.

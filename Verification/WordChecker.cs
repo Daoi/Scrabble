@@ -1,11 +1,8 @@
-﻿namespace Scrabble
-{
-    using System.IO;
-    using System.Diagnostics;
-    using System.Windows.Forms;
-    using System.Text;
-    using System.Collections.Generic;
+﻿using System.IO;
+using System.Diagnostics;
 
+
+namespace Scrabble.Verification { 
     internal class WordChecker
     {
         private static string run_cmd(string cmd, string args)
@@ -35,119 +32,6 @@
             //MessageBox.Show(result);
             return string.Equals(result.ToLower().Trim(), "true");
         }
-
-
-        public static string VerifyBoard(Button[,] board, List<int> placements)
-        {
-            StringBuilder sb = new StringBuilder();
-            HashSet<string> words = new HashSet<string>();
-            foreach (int tileIndex in placements)
-            {
-               words.Add(CheckHorizontal(board, tileIndex));
-               words.Add(CheckVertical(board, tileIndex));
-            }
-            
-            foreach(string word in words)
-            {
-                if (word.Length < 2)
-                    continue;
-
-                if (!CheckWord(word))
-                {
-                    sb.Append(word + "! ");
-                }
-                else
-                {
-                    sb.Append(word + " ");
-                }
-            }
-            return sb.ToString();
-        }
-
-        private static string CheckHorizontal(Button[,] btns, int tileIndex)
-        {
-            StringBuilder sb = new StringBuilder();
-            int[] indicies = BoardHandler.getRowCol(tileIndex);
-            int row = indicies[0];
-            int col = indicies[1];
-            int max = 14, min = 0;
-            //Right
-            for(int i = col; i < max; i++)
-            {
-                if(string.IsNullOrEmpty(btns[row,i].Text) || btns[row, i].Text.Length > 1)
-                {
-                    break;
-                }
-                else
-                {
-                    sb.Append(btns[row, i].Text);
-                }
-            }
-            //Left
-            for (int i = col - 1; i >= min; i--)
-            {
-                if (string.IsNullOrEmpty(btns[row, i].Text) || btns[row, i].Text.Length > 1)
-                {
-                    break;
-                }
-                else
-                {
-                   sb.Insert(0, btns[row, i].Text);
-                }
-            }
-
-            if (sb.ToString().Length > 1)
-            {
-                return sb.ToString();
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        private static string CheckVertical(Button[,] btns, int tileIndex)
-        {
-            StringBuilder sb = new StringBuilder();
-            int[] indicies = BoardHandler.getRowCol(tileIndex);
-            int row = indicies[0];
-            int col = indicies[1];
-            int max = 14, min = 0;
-            //Down
-            for (int i = row; i < max; i++)
-            {
-                if (string.IsNullOrEmpty(btns[i, col].Text) || btns[i, col].Text.Length > 1)
-                {
-                    break;
-                }
-                else
-                {
-                    sb.Append(btns[i, col].Text);
-                }
-            }
-            //Up
-            for (int i = row - 1; i >= min; i--)
-            {
-                if (string.IsNullOrEmpty(btns[i, col].Text) || btns[i, col].Text.Length > 1)
-                {
-                    break;
-                }
-                else
-                {
-                    sb.Insert(0, btns[i, col].Text);
-                }
-            }
-
-            if (sb.ToString().Length > 1)
-            {
-                return sb.ToString();
-            }
-            else
-            {
-                return "";
-            }
-        }
-
 
     }
 }

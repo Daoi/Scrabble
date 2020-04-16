@@ -2,7 +2,7 @@
 
 namespace Scrabble
 {
-    internal class Player
+    public class Player
     {
 
         private string name;

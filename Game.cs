@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Scrabble
 {
-    internal class Game
+    public class Game
     {
         private static Random rand = new Random();
 
