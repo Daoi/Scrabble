@@ -19,7 +19,7 @@ namespace Scrabble
             {"Q Z", 10 }
         };
 
-        private ArrayList letterBag = new ArrayList();
+        private List<LetterTile> letterBag = new List<LetterTile>();
 
         private Dictionary<string, int> letterFrequency = new Dictionary<string, int>()
         {
@@ -53,18 +53,18 @@ namespace Scrabble
             {"None", 0 }
         };
 
-
+        //Put bag generation somewhere else, probably game mechanics, maybe data handling?
         public Game()
         {
             foreach(string key in letterFrequency.Keys)
             {
                 for (int i = 0; i < letterFrequency[key]; i++)
-                    letterBag.Add(key);
+                    letterBag.Add(new LetterTile(key,getLetterValue(key)));
             }
         }
 
         
-
+        //Add to game mechanics
         public static int getLetterValue(string letter)
         {
             foreach (KeyValuePair<string, int> kvp in letterValues)
@@ -76,7 +76,7 @@ namespace Scrabble
             }
             return -1;
         }
-
+        //Add to game mechanics
         public string[] drawTiles(int count)
         {
             string[] tiles = new string[count];
@@ -84,10 +84,10 @@ namespace Scrabble
             {
                 string letter = "None";
                 while (letterFrequency[letter] == 0 && letterBag.Count > 0) {
-                    letter = letterBag[rand.Next(letterBag.Count)].ToString();
+                    letter = letterBag[rand.Next(letterBag.Count)].GetTileLetter();
                     if (letter != "None" && letterFrequency[letter] > 0)
                     {
-                        letterBag.Remove(letter);
+                        letterBag.Remove(letterBag.Find(lt => letter.Equals(lt.GetTileLetter())));
                     }
                 }
                 tiles[i] = letter;
@@ -95,13 +95,13 @@ namespace Scrabble
             }
             return tiles;
         }
-
+        //Add to game mechanics
         public void addTiles(string[] tiles)
         {
             foreach(string tile in tiles)
             {
                 Increment(letterFrequency, tile);
-                letterBag.Add(tile);
+                letterBag.Add(new LetterTile(tile,getLetterValue(tile)));
             }
         }
 

@@ -10,18 +10,30 @@ namespace Scrabble
     public class LetterTile:Button
     {
         string tileLetter { get; set; }
-        string tileScore { get; set; }
+        int tileScore { get; set; }
         bool isBlankTile { get; set; } = false;
         int location { get; set; }
 
-    public LetterTile(string letter, string score)
+    public LetterTile(string letter, int scoreValue)
         {
             if (letter.Equals(" "))
                 isBlankTile = true;
 
             tileLetter = letter;
-            tileScore = score;
+            tileScore = scoreValue;
             base.Text = tileLetter;
+        }
+
+        public void SetTIleLetter(string letter)
+        {
+            tileLetter = letter;
+            base.Text = tileLetter;
+
+        }
+
+        public string GetTileLetter()
+        {
+            return tileLetter;
         }
 
          

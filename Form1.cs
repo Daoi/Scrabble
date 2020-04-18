@@ -53,7 +53,7 @@ namespace Scrabble
             Button btn = sender as Button;
             currentTile = btn;
             currentTileLetter = btn.Text.ToString();
-            currentTileValue = LetterTiles.getLetterValue(currentTileLetter);
+            currentTileValue = Game.getLetterValue(currentTileLetter);
             btn.DoDragDrop(btn.Text, DragDropEffects.Copy);
             
         }
