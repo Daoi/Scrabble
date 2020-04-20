@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Diagnostics;
+using Scrabble.Utility;
 
 
 namespace Scrabble.Verification { 
@@ -28,8 +29,8 @@ namespace Scrabble.Verification {
         public static bool CheckWord(string word)
         {
             string result = run_cmd(@"C:\Users\Mrah\PycharmProjects\WordChecker\CheckWord.py", "\"" + word + "\"");
-            //MessageBox.Show(result);
-            return string.Equals(result.ToLower().Trim(), "true");
+            return bool.Parse(result);
+
         }
 
     }

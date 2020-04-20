@@ -23,7 +23,6 @@ namespace Scrabble.Verification
             {
                 if (word.Length < 2)
                     continue;
-
                 if (WordChecker.CheckWord(word))
                 {
                     sb.Append(word + " ");
