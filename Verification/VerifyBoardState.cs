@@ -26,11 +26,11 @@ namespace Scrabble.Verification
 
                 if (WordChecker.CheckWord(word))
                 {
-                    sb.Append(word + "! ");
+                    sb.Append(word + " ");
                 }
                 else
                 {
-                    sb.Append(word + " ");
+                    sb.Append(word + "! ");
                 }
             }
             return sb.ToString();

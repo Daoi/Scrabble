@@ -9,6 +9,7 @@ namespace Scrabble
 {
     public partial class Form1 : Form
     {
+        const int InHand = -1;
         BinaryFormatter formatter = new BinaryFormatter();
         Game currentGame = new Game();
         Player playerOne = new Player("p1");
@@ -16,10 +17,10 @@ namespace Scrabble
         Player currentPlayer;
         Button[,] gameBoard = new Button[15, 15];
         //Store the current players hand and the board at the start of turn
-        Dictionary<Button, string> handAtTurnStart = new Dictionary<Button, string>();
+        Dictionary<LetterTile, string> handAtTurnStart = new Dictionary<LetterTile, string>();
         Dictionary<Button, string> boardAtTurnStart = new Dictionary<Button, string>();
         //The tile currently being manipulated by the player
-        Button currentTile;
+        LetterTile currentTile;
         int currentTileValue;
         string currentTileLetter;
         List<int> placements = new List<int>();
@@ -35,9 +36,9 @@ namespace Scrabble
             //Create the board
             BoardHandler bh = new BoardHandler();
             gameBoard = bh.GenerateBoard(pnlBoard, Button_DragEnter, Button_DragDrop);
-            
+
             //Add drag and drop functionality to tile hand buttons
-            pnlTiles.Controls.OfType<Button>().ToList().ForEach(btn => btn.MouseDown += Button_MouseDown);
+            Game_Modeling.HandCreator.GenerateHand(pnlTiles, Button_MouseDown);
             //
             currentPlayer = Game_Rules.TurnOrder.DetermineTurnOrder(playerOne, playerTwo, currentGame);
             playerOne.DrawFirstHand(currentGame);
@@ -50,11 +51,11 @@ namespace Scrabble
         //Drag and Drop Functionallity Begin
         private void Button_MouseDown(object sender, MouseEventArgs e)
         {
-            Button btn = sender as Button;
-            currentTile = btn;
-            currentTileLetter = btn.Text.ToString();
+            LetterTile letterTile = sender as LetterTile;
+            currentTile = letterTile;
+            currentTileLetter = letterTile.Text.ToString();
             currentTileValue = Game.getLetterValue(currentTileLetter);
-            btn.DoDragDrop(btn.Text, DragDropEffects.Copy);
+            letterTile.DoDragDrop(letterTile.Text, DragDropEffects.Copy);
             
         }
 
@@ -69,6 +70,7 @@ namespace Scrabble
             }
             boardAtTurnStart.Add(btn, btn.Text);
             handAtTurnStart.Add(currentTile, currentTile.Text);
+            currentTile.SetBoardPosition(int.Parse(btn.Tag.ToString()));
             btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
             btn.AllowDrop = false;
             placements.Add(int.Parse(btn.Tag.ToString()));
@@ -107,12 +109,13 @@ namespace Scrabble
                 boardTile.Text = boardAtTurnStart[boardTile];
                 boardTile.AllowDrop = true;
             }
-            foreach (Button handTile in handAtTurnStart.Keys)
+            foreach (LetterTile handTile in handAtTurnStart.Keys)
             {
                 handTile.Text = handAtTurnStart[handTile];
+                handTile.SetBoardPosition(InHand);
             }
 
-            handAtTurnStart = new Dictionary<Button, string>();
+            handAtTurnStart = new Dictionary<LetterTile, string>();
             boardAtTurnStart = new Dictionary<Button, string>();
         }
 
@@ -194,7 +197,7 @@ namespace Scrabble
 
         public void NewTurn()
         {
-            handAtTurnStart = new Dictionary<Button, string>();
+            handAtTurnStart = new Dictionary<LetterTile, string>();
             boardAtTurnStart = new Dictionary<Button, string>();
         }
     }

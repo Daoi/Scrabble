@@ -12,17 +12,25 @@ namespace Scrabble
         string tileLetter { get; set; }
         int tileScore { get; set; }
         bool isBlankTile { get; set; } = false;
-        int location { get; set; }
+        int boardPosition;
 
     public LetterTile(string letter, int scoreValue)
         {
             if (letter.Equals(" "))
                 isBlankTile = true;
-
+            boardPosition = -1;
             tileLetter = letter;
             tileScore = scoreValue;
             base.Text = tileLetter;
         }
+        public LetterTile()
+        {
+            boardPosition = -1;
+            tileLetter = "";
+            tileScore = 0;
+            base.Text = tileLetter;
+        }
+
 
         public void SetTIleLetter(string letter)
         {
@@ -34,6 +42,16 @@ namespace Scrabble
         public string GetTileLetter()
         {
             return tileLetter;
+        }
+
+        public void SetBoardPosition(int position)
+        {
+            boardPosition = position;
+        }
+
+        public int GetBoardPosition()
+        {
+            return boardPosition;
         }
 
          

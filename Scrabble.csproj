@@ -67,7 +67,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoardHandler.cs" />
+    <Compile Include="Game Modeling\BoardCreator.cs" />
+    <Compile Include="Game Mechanics\Score.cs" />
+    <Compile Include="Game Modeling\HandCreator.cs" />
     <Compile Include="LetterTile.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -113,8 +115,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Game Mechanics\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
