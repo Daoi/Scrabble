@@ -39,6 +39,7 @@
             this.lblPlayerOneScore = new System.Windows.Forms.Label();
             this.lblPlayerTwoScore = new System.Windows.Forms.Label();
             this.lblCurrentPlayersTurn = new System.Windows.Forms.Label();
+            this.lblExchange = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // pnlBoard
@@ -87,11 +88,12 @@
             this.btnExchangeTiles.TabIndex = 4;
             this.btnExchangeTiles.Text = "Exchange";
             this.btnExchangeTiles.UseVisualStyleBackColor = true;
+            this.btnExchangeTiles.Click += new System.EventHandler(this.btnExchangeTiles_Click);
             // 
             // lblScores
             // 
             this.lblScores.AutoSize = true;
-            this.lblScores.Location = new System.Drawing.Point(726, 642);
+            this.lblScores.Location = new System.Drawing.Point(849, 642);
             this.lblScores.Name = "lblScores";
             this.lblScores.Size = new System.Drawing.Size(125, 26);
             this.lblScores.TabIndex = 5;
@@ -100,7 +102,7 @@
             // lblPlayerOneScore
             // 
             this.lblPlayerOneScore.AutoSize = true;
-            this.lblPlayerOneScore.Location = new System.Drawing.Point(741, 668);
+            this.lblPlayerOneScore.Location = new System.Drawing.Point(864, 668);
             this.lblPlayerOneScore.Name = "lblPlayerOneScore";
             this.lblPlayerOneScore.Size = new System.Drawing.Size(13, 13);
             this.lblPlayerOneScore.TabIndex = 6;
@@ -109,7 +111,7 @@
             // lblPlayerTwoScore
             // 
             this.lblPlayerTwoScore.AutoSize = true;
-            this.lblPlayerTwoScore.Location = new System.Drawing.Point(821, 668);
+            this.lblPlayerTwoScore.Location = new System.Drawing.Point(944, 668);
             this.lblPlayerTwoScore.Name = "lblPlayerTwoScore";
             this.lblPlayerTwoScore.Size = new System.Drawing.Size(13, 13);
             this.lblPlayerTwoScore.TabIndex = 7;
@@ -124,11 +126,20 @@
             this.lblCurrentPlayersTurn.TabIndex = 8;
             this.lblCurrentPlayersTurn.Text = "label1";
             // 
+            // lblExchange
+            // 
+            this.lblExchange.AutoSize = true;
+            this.lblExchange.Location = new System.Drawing.Point(561, 646);
+            this.lblExchange.Name = "lblExchange";
+            this.lblExchange.Size = new System.Drawing.Size(0, 13);
+            this.lblExchange.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1102, 713);
+            this.Controls.Add(this.lblExchange);
             this.Controls.Add(this.lblCurrentPlayersTurn);
             this.Controls.Add(this.lblPlayerTwoScore);
             this.Controls.Add(this.lblPlayerOneScore);
@@ -158,6 +169,7 @@
         private System.Windows.Forms.Label lblPlayerOneScore;
         private System.Windows.Forms.Label lblPlayerTwoScore;
         private System.Windows.Forms.Label lblCurrentPlayersTurn;
+        private System.Windows.Forms.Label lblExchange;
     }
 
 }

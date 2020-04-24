@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game Mechanics\DrawTiles.cs" />
     <Compile Include="Game Modeling\BoardCreator.cs" />
     <Compile Include="Game Mechanics\Score.cs" />
     <Compile Include="Game Modeling\HandCreator.cs" />

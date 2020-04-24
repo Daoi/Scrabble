@@ -9,6 +9,7 @@ namespace Scrabble
 {
     public partial class Form1 : Form
     {
+        bool exchanging = false;
         const int InHand = -1;
         BinaryFormatter formatter = new BinaryFormatter();
         Game currentGame = new Game();
@@ -127,7 +128,7 @@ namespace Scrabble
             if (words.Contains("!"))//Turn unsuccesful, inform player of incorrect words.
             {
                 string[] split = words.Split(' ');
-                foreach(string str in split)
+                foreach (string str in split)
                 {
                     if (str.Contains("!"))
                     {
@@ -142,17 +143,19 @@ namespace Scrabble
                 MessageBox.Show("The following words were formed: " + words, "Words formed and score");
                 List<Button> emptyTiles = pnlTiles.Controls.OfType<Button>().ToList().FindAll(btn => btn.Text.Equals(""));
                 string[] newTiles = currentGame.drawTiles(emptyTiles.Count);
-                for(int i = 0; i < newTiles.Length; i++)
+                for (int i = 0; i < newTiles.Length; i++)
                 {
                     emptyTiles[i].Text = newTiles[i];
                 }
-                
-                currentPlayer.SaveHand(GetHand());
-                SwitchTurn();
-                NewTurn();
-            
+                EndTurn();
             }
+        }
 
+        public void EndTurn()
+        {
+            currentPlayer.SaveHand(GetHand());
+            SwitchTurn();
+            NewTurn();
         }
 
         public void FirstTurn()
@@ -200,5 +203,76 @@ namespace Scrabble
             handAtTurnStart = new Dictionary<LetterTile, string>();
             boardAtTurnStart = new Dictionary<Button, string>();
         }
+
+        private void Button_MouseDownExchange(object sender, MouseEventArgs me)
+        {
+            LetterTile btn = (LetterTile)sender;
+            if(btn.Exchange == false)
+            {
+                btn.Exchange = true;
+                btn.BackColor = System.Drawing.Color.LightSteelBlue;
+            }
+            else
+            {
+                btn.Exchange = false;
+                btn.BackColor = System.Drawing.SystemColors.Control;
+            }
+
+        }
+
+
+
+         private void btnExchangeTiles_Click(object sender, EventArgs e)
+        {
+            resetBoard();
+            List<LetterTile> tiles = pnlTiles.Controls.OfType<LetterTile>().ToList();
+            
+            if (exchanging == true)
+            {
+                exchanging = false;
+                List<LetterTile> exchangeTiles = tiles.FindAll(lt => lt.Exchange == true);
+                //No exchange done
+                if (exchangeTiles.Count == 0)
+                {
+                    tiles.ForEach(lt => lt.MouseDown += new MouseEventHandler(Button_MouseDown));
+                    tiles.ForEach(lt => lt.MouseDown -= Button_MouseDownExchange);
+                    tiles.ForEach(lt => lt.BackColor = System.Drawing.SystemColors.Control);
+                    lblExchange.Text = "";
+                    btnEndTurn.Enabled = true;
+                    btnResetTurn.Enabled = true;
+                    return;
+                }
+                //Draw tiles
+                string[] newTiles = currentGame.drawTiles(exchangeTiles.Count);
+                for (int i = 0; i < newTiles.Length; i++)
+                {
+                    exchangeTiles[i].Text = newTiles[i];
+                }
+                tiles.ForEach(lt => lt.MouseDown += new MouseEventHandler(Button_MouseDown));
+                tiles.ForEach(lt => lt.MouseDown -= Button_MouseDownExchange);
+                tiles.ForEach(lt => lt.Exchange = false);
+                exchanging = false;
+                btnEndTurn.Enabled = true;
+                btnResetTurn.Enabled = true;
+                MessageBox.Show($"{currentPlayer.GetName()} has used their turn to exchange tiles. It is now {(currentPlayer == playerOne ? playerTwo.GetName() : playerOne.GetName())}'s turn.");
+                tiles.ForEach(lt => lt.BackColor = System.Drawing.SystemColors.Control);
+                EndTurn();
+                lblExchange.Text = "";
+
+            }
+            else
+            {
+                exchanging = true;
+                btnEndTurn.Enabled = false;
+                btnResetTurn.Enabled = false;
+                tiles.ForEach(lt => lt.MouseDown += new MouseEventHandler(Button_MouseDownExchange));
+                tiles.ForEach(lt => lt.MouseDown -= Button_MouseDown);
+                lblExchange.Text = "Exchange Mode Active. \r\n" +
+                                    "To exchange tiles click the ones you want to switch out \r\n " +
+                                    "Then, once you're done, click exchange again to switch them. \r\n " +
+                                    "If you change your mind about a tile, click it again to unseslect it. \r\n" +
+                                    "Selected tiles will turn blue. Exchanging tiles will end your turn.";
+            }
+       }
     }
 }

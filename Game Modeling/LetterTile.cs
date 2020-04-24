@@ -13,6 +13,7 @@ namespace Scrabble
         int tileScore { get; set; }
         bool isBlankTile { get; set; } = false;
         int boardPosition;
+        public bool Exchange { get; set; } = false; 
 
     public LetterTile(string letter, int scoreValue)
         {

@@ -79,21 +79,7 @@ namespace Scrabble
         //Add to game mechanics
         public string[] drawTiles(int count)
         {
-            string[] tiles = new string[count];
-            for (int i = 0; i < count; i++)
-            {
-                string letter = "None";
-                while (letterFrequency[letter] == 0 && letterBag.Count > 0) {
-                    letter = letterBag[rand.Next(letterBag.Count)].GetTileLetter();
-                    if (letter != "None" && letterFrequency[letter] > 0)
-                    {
-                        letterBag.Remove(letterBag.Find(lt => letter.Equals(lt.GetTileLetter())));
-                    }
-                }
-                tiles[i] = letter;
-                Decrement(letterFrequency, letter);
-            }
-            return tiles;
+           return Game_Mechanics.DrawTiles.drawTiles(count, letterFrequency, letterBag);
         }
         //Add to game mechanics
         public void addTiles(string[] tiles)
@@ -105,14 +91,14 @@ namespace Scrabble
             }
         }
 
-        private static void Increment<T>(Dictionary<T, int> dictionary, T key)
+        public static void Increment<T>(Dictionary<T, int> dictionary, T key)
         {
             int count;
             dictionary.TryGetValue(key, out count);
             dictionary[key] = count + 1;
         }
 
-        private static void Decrement<T>(Dictionary<T, int> dictionary, T key)
+        public static void Decrement<T>(Dictionary<T, int> dictionary, T key)
         {
             int count;
             dictionary.TryGetValue(key, out count);

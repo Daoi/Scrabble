@@ -3,7 +3,8 @@ using System.Diagnostics;
 using Scrabble.Utility;
 
 
-namespace Scrabble.Verification { 
+namespace Scrabble.Verification
+{
     internal class WordChecker
     {
         private static string run_cmd(string cmd, string args)
