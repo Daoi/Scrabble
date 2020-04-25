@@ -23,3 +23,5 @@ C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.csproj.CopyCompl
 C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.exe
 C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.pdb
 C:\Users\Mrah\source\repos\Scrabble\Scrabble\obj\Debug\Scrabble.csprojAssemblyReference.cache
+C:\Users\Mrah\source\repos\Scrabble\Scrabble\bin\Debug\NetSpell.SpellChecker.dll
+C:\Users\Mrah\source\repos\Scrabble\Scrabble\bin\Debug\NetSpell.SpellChecker.xml

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Formatters.Binary;
+using Scrabble.Verification;
 
 namespace Scrabble
 {
@@ -11,7 +12,6 @@ namespace Scrabble
     {
         bool exchanging = false;
         const int InHand = -1;
-        BinaryFormatter formatter = new BinaryFormatter();
         Game currentGame = new Game();
         Player playerOne = new Player("p1");
         Player playerTwo = new Player("p2");
@@ -26,6 +26,7 @@ namespace Scrabble
         string currentTileLetter;
         List<int> placements = new List<int>();
         //
+        WordChecker wc = new WordChecker();
 
         public Form1()
         {
@@ -64,7 +65,7 @@ namespace Scrabble
         {
             Button btn = (Button)sender;
             int[] index = BoardHandler.getRowCol(int.Parse(btn.Tag.ToString()));
-            if (!Verification.TilePlacement.CheckAdjacent(index[0], index[1], 14, 14, gameBoard))
+            if (!TilePlacement.CheckAdjacent(index[0], index[1], 14, 14, gameBoard))
             {
                 e.Effect = DragDropEffects.None;
                 return;
@@ -81,9 +82,14 @@ namespace Scrabble
         private void Button_DragEnter(object sender, DragEventArgs e)
         {
             Button btn = sender as Button;
+            if(currentTile.Text == " ")
+            {
+
+            }
             string tileValue = currentTile.Text;
             if (e.Data.GetDataPresent(DataFormats.StringFormat) && tileValue != "")
             {
+                
                 e.Effect = DragDropEffects.Copy;
             }
             else
@@ -94,9 +100,6 @@ namespace Scrabble
         }
         //Drag and Drop funtionallity End
         
-        //Move to Game class probably
-
-
 
         private void btnResetTurn_Click(object sender, EventArgs e)
         {
@@ -122,7 +125,7 @@ namespace Scrabble
 
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
-            string words = Verification.VerifyBoardState.VerifyBoard(gameBoard, placements);
+            string words = Verification.VerifyBoardState.VerifyBoard(gameBoard, placements, wc);
             StringBuilder invalidWords = new StringBuilder("The following invalid words were found: ");
 
             if (words.Contains("!"))//Turn unsuccesful, inform player of incorrect words.

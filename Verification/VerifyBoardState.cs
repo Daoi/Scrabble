@@ -7,9 +7,9 @@ using System.Windows.Forms;
 
 namespace Scrabble.Verification
 {
-    public static class VerifyBoardState
-    {
-        public static string VerifyBoard(Button[,] board, List<int> placements)
+ 
+    public static class VerifyBoardState { 
+        public static string VerifyBoard(Button[,] board, List<int> placements, WordChecker wc)
         {
             StringBuilder sb = new StringBuilder();
             HashSet<string> words = new HashSet<string>();
@@ -23,7 +23,7 @@ namespace Scrabble.Verification
             {
                 if (word.Length < 2)
                     continue;
-                if (WordChecker.CheckWord(word))
+                if (wc.CheckWord(word))
                 {
                     sb.Append(word + " ");
                 }

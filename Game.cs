@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Scrabble.Game_Mechanics;
 
 namespace Scrabble
 {
@@ -8,16 +9,6 @@ namespace Scrabble
     {
         private static Random rand = new Random();
 
-        private static Dictionary<string, int> letterValues = new Dictionary<string, int>()
-        {
-            {"A E I O U L N S T R", 1 },
-            {"D G", 2 },
-            {"B C M P", 3 },
-            {"F H V W Y", 4 },
-            {"K", 5 },
-            {"J K", 8 },
-            {"Q Z", 10 }
-        };
 
         private List<LetterTile> letterBag = new List<LetterTile>();
 
@@ -62,24 +53,15 @@ namespace Scrabble
                     letterBag.Add(new LetterTile(key,getLetterValue(key)));
             }
         }
-
         
-        //Add to game mechanics
         public static int getLetterValue(string letter)
         {
-            foreach (KeyValuePair<string, int> kvp in letterValues)
-            {
-                if (kvp.Key.Contains(letter))
-                {
-                    return kvp.Value;
-                }
-            }
-            return -1;
+            return LetterValues.getLetterValue(letter);
         }
-        //Add to game mechanics
+
         public string[] drawTiles(int count)
         {
-           return Game_Mechanics.DrawTiles.drawTiles(count, letterFrequency, letterBag);
+           return DrawTiles.drawTiles(count, letterFrequency, letterBag);
         }
         //Add to game mechanics
         public void addTiles(string[] tiles)
