@@ -15,6 +15,7 @@ namespace Scrabble
         public Player(string name)
         {
             this.name = name;
+            score = 0;
         }
 
         public string GetName()
@@ -35,6 +36,13 @@ namespace Scrabble
         public void DrawFirstHand(Game game)
         {
             currentHand = game.drawTiles(7);
+        }
+
+        public int PlayerScore { get { return this.score; } set { this.score = value; } }
+
+        public void updateScore(int value)
+        {
+            score += value;
         }
     }
 }

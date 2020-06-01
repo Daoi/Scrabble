@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Runtime.Serialization.Formatters.Binary;
 using Scrabble.Verification;
 
 namespace Scrabble
@@ -12,6 +11,8 @@ namespace Scrabble
     {
         bool exchanging = false;
         const int InHand = -1;
+        int score = 0;
+        int scoreMultiplier = 1;
         Game currentGame = new Game();
         Player playerOne = new Player("p1");
         Player playerTwo = new Player("p2");
@@ -49,7 +50,7 @@ namespace Scrabble
 
             
         }
-
+        //Grabbing a tile
         //Drag and Drop Functionallity Begin
         private void Button_MouseDown(object sender, MouseEventArgs e)
         {
@@ -60,25 +61,45 @@ namespace Scrabble
             letterTile.DoDragDrop(letterTile.Text, DragDropEffects.Copy);
             
         }
-
+        //Dropping letter on board
         private void Button_DragDrop(object sender, DragEventArgs e)
         {
-            Button btn = (Button)sender;
+            Button btn = (Button)sender;//The tile the letter is being placed on
             int[] index = BoardHandler.getRowCol(int.Parse(btn.Tag.ToString()));
+            
+            //Make sure an adjacent tile contains a letter or is the center piece
             if (!TilePlacement.CheckAdjacent(index[0], index[1], 14, 14, gameBoard))
             {
                 e.Effect = DragDropEffects.None;
                 return;
             }
+            //Save premodified values
             boardAtTurnStart.Add(btn, btn.Text);
             handAtTurnStart.Add(currentTile, currentTile.Text);
+            
+            //If it's a preimum tile, record the multiplier
+            if (btn.Text.Equals("Double Word Score") || btn.Text.Equals("*"))
+            {
+                scoreMultiplier *= 2;
+            }
+            else if (btn.Text.Equals("Triple Word Score"))
+            {
+                scoreMultiplier *= 3;
+            }
+            //Calculate value for placed tile
+            score += Game_Mechanics.Scoring.CalculateScore.CaluclatePlacedTileScore(btn, currentTile);
+            //Potentially useless
             currentTile.SetBoardPosition(int.Parse(btn.Tag.ToString()));
+            //Update board tile
             btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
             btn.AllowDrop = false;
+            
+
+            
             placements.Add(int.Parse(btn.Tag.ToString()));
             currentTile.Text = "";
         }
-
+        //Dragging over a tile
         private void Button_DragEnter(object sender, DragEventArgs e)
         {
             Button btn = sender as Button;
@@ -103,11 +124,13 @@ namespace Scrabble
 
         private void btnResetTurn_Click(object sender, EventArgs e)
         {
-            resetBoard();
+            ResetBoard();
         }
 
-        private void resetBoard()
+        private void ResetBoard()
         {
+            score = 0;
+            scoreMultiplier = 1;
             foreach (Button boardTile in boardAtTurnStart.Keys)
             {
                 boardTile.Text = boardAtTurnStart[boardTile];
@@ -125,7 +148,7 @@ namespace Scrabble
 
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
-            string words = Verification.VerifyBoardState.VerifyBoard(gameBoard, placements, wc);
+            string words = VerifyBoardState.VerifyBoard(gameBoard, placements, wc);
             StringBuilder invalidWords = new StringBuilder("The following invalid words were found: ");
 
             if (words.Contains("!"))//Turn unsuccesful, inform player of incorrect words.
@@ -143,7 +166,11 @@ namespace Scrabble
             }
             else//Turn succuesful, draw new tiles and save hand. Calculate Score. 
             {
-                MessageBox.Show("The following words were formed: " + words, "Words formed and score");
+                //Scoring
+                currentPlayer.updateScore(score * scoreMultiplier);
+
+                MessageBox.Show("The following words were formed: " + words + $" For {score * scoreMultiplier} points", "Words formed and score");
+                
                 List<Button> emptyTiles = pnlTiles.Controls.OfType<Button>().ToList().FindAll(btn => btn.Text.Equals(""));
                 string[] newTiles = currentGame.drawTiles(emptyTiles.Count);
                 for (int i = 0; i < newTiles.Length; i++)
@@ -156,7 +183,14 @@ namespace Scrabble
 
         public void EndTurn()
         {
+            //Update Scores
+            lblPlayerOneScore.Text = playerOne.PlayerScore.ToString();
+            lblPlayerOneScore.Text = playerTwo.PlayerScore.ToString();
+            scoreMultiplier = 0;
+            score = 0;
+            //Save Player Hand
             currentPlayer.SaveHand(GetHand());
+            //
             SwitchTurn();
             NewTurn();
         }
@@ -227,7 +261,7 @@ namespace Scrabble
 
          private void btnExchangeTiles_Click(object sender, EventArgs e)
         {
-            resetBoard();
+            ResetBoard();
             List<LetterTile> tiles = pnlTiles.Controls.OfType<LetterTile>().ToList();
             
             if (exchanging == true)

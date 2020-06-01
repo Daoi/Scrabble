@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Scrabble.Game_Mechanics;
+using System;
 using System.Windows.Forms;
 
 namespace Scrabble
@@ -13,7 +10,8 @@ namespace Scrabble
         int tileScore { get; set; }
         bool isBlankTile { get; set; } = false;
         int boardPosition;
-        public bool Exchange { get; set; } = false; 
+        public bool Exchange { get; set; } = false;
+        bool placedThisTurn;
 
     public LetterTile(string letter, int scoreValue)
         {
@@ -24,6 +22,15 @@ namespace Scrabble
             tileScore = scoreValue;
             base.Text = tileLetter;
         }
+        public LetterTile(Button btn)
+        {
+            if (btn.Text.Equals(" "))
+                isBlankTile = true;
+            boardPosition = int.Parse((string)btn.Tag);
+            tileLetter = btn.Text;
+            tileScore = LetterValues.getLetterValue(tileLetter);
+        }
+
         public LetterTile()
         {
             boardPosition = -1;
@@ -33,7 +40,7 @@ namespace Scrabble
         }
 
 
-        public void SetTIleLetter(string letter)
+        public void SetTileLetter(string letter)
         {
             tileLetter = letter;
             base.Text = tileLetter;
@@ -55,6 +62,8 @@ namespace Scrabble
             return boardPosition;
         }
 
-         
+        public int TileScore { get { return this.tileScore; } set { this.tileScore = value; } }
+
+
     }
 }

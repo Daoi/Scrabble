@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Scrabble.Game_Mechanics;
 
@@ -72,6 +71,7 @@ namespace Scrabble
                 letterBag.Add(new LetterTile(tile,getLetterValue(tile)));
             }
         }
+
 
         public static void Increment<T>(Dictionary<T, int> dictionary, T key)
         {
