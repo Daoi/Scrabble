@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Scrabble.Game_Modeling;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Scrabble.Verification
 {
     public static class BoardCheckerVertical
     {
-        public static string CheckVertical(Button[,] btns, int tileIndex)
+        public static string CheckVertical(Button[,] btns, int tileIndex, InternalBoard ib, ref List<int> positions)
         {
             StringBuilder sb = new StringBuilder();
             int[] indicies = BoardHandler.getRowCol(tileIndex);
@@ -25,6 +26,7 @@ namespace Scrabble.Verification
                 }
                 else
                 {
+                    positions.Add((i * 15) + col);
                     sb.Append(btns[i, col].Text);
                 }
             }
@@ -37,6 +39,7 @@ namespace Scrabble.Verification
                 }
                 else
                 {
+                    positions.Add((i * 15) + col);
                     sb.Insert(0, btns[i, col].Text);
                 }
             }

@@ -13,14 +13,15 @@ namespace Scrabble
         public bool Exchange { get; set; } = false;
         bool placedThisTurn;
 
-    public LetterTile(string letter, int scoreValue)
+    public LetterTile(string letter, int pos)
         {
             if (letter.Equals(" "))
                 isBlankTile = true;
-            boardPosition = -1;
+            boardPosition = pos;
             tileLetter = letter;
-            tileScore = scoreValue;
+            tileScore = LetterValues.getLetterValue(tileLetter);
             base.Text = tileLetter;
+            placedThisTurn = true;
         }
         public LetterTile(Button btn)
         {
@@ -37,6 +38,7 @@ namespace Scrabble
             tileLetter = "";
             tileScore = 0;
             base.Text = tileLetter;
+            placedThisTurn = false;
         }
 
 
@@ -61,8 +63,10 @@ namespace Scrabble
         {
             return boardPosition;
         }
+        public string TileLetter { get { return this.tileLetter; } }
 
         public int TileScore { get { return this.tileScore; } set { this.tileScore = value; } }
+        public bool PlacedThisTurn { get { return this.placedThisTurn; } set { this.placedThisTurn = value; } }
 
 
     }

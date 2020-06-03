@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Scrabble.Game_Modeling;
 using Scrabble.Verification;
 
 namespace Scrabble
 {
     public partial class Form1 : Form
     {
+        InternalBoard ib = new InternalBoard();
         bool exchanging = false;
         const int InHand = -1;
         int score = 0;
@@ -68,7 +70,7 @@ namespace Scrabble
             int[] index = BoardHandler.getRowCol(int.Parse(btn.Tag.ToString()));
             
             //Make sure an adjacent tile contains a letter or is the center piece
-            if (!TilePlacement.CheckAdjacent(index[0], index[1], 14, 14, gameBoard))
+            if (!TilePlacement.CheckAdjacent(index[0], index[1], gameBoard))
             {
                 e.Effect = DragDropEffects.None;
                 return;
@@ -91,6 +93,7 @@ namespace Scrabble
             //Potentially useless
             currentTile.SetBoardPosition(int.Parse(btn.Tag.ToString()));
             //Update board tile
+            ib.addTile(new LetterTile(currentTile.Text, currentTile.GetBoardPosition()));
             btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
             btn.AllowDrop = false;
             
@@ -148,7 +151,7 @@ namespace Scrabble
 
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
-            string words = VerifyBoardState.VerifyBoard(gameBoard, placements, wc);
+            string words = VerifyBoardState.VerifyBoard(gameBoard, placements, wc, ib);
             StringBuilder invalidWords = new StringBuilder("The following invalid words were found: ");
 
             if (words.Contains("!"))//Turn unsuccesful, inform player of incorrect words.
@@ -186,10 +189,12 @@ namespace Scrabble
             //Update Scores
             lblPlayerOneScore.Text = playerOne.PlayerScore.ToString();
             lblPlayerOneScore.Text = playerTwo.PlayerScore.ToString();
-            scoreMultiplier = 0;
+            scoreMultiplier = 1;
             score = 0;
             //Save Player Hand
             currentPlayer.SaveHand(GetHand());
+            //Update IB
+            ib.endTurnIB();
             //
             SwitchTurn();
             NewTurn();

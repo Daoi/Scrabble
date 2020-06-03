@@ -74,6 +74,7 @@
     <Compile Include="Game Mechanics\Scoring\CalculateScore.cs" />
     <Compile Include="Game Modeling\BoardCreator.cs" />
     <Compile Include="Game Mechanics\Scoring\LetterValues.cs" />
+    <Compile Include="Game Modeling\InternalBoard.cs" />
     <Compile Include="Game Modeling\HandCreator.cs" />
     <Compile Include="Game Modeling\LetterTile.cs">
       <SubType>Component</SubType>

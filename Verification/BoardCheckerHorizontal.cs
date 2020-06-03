@@ -1,11 +1,14 @@
-﻿using System.Text;
+﻿using IronPython.Runtime;
+using Scrabble.Game_Modeling;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Scrabble.Verification
 {
     public static class BoardCheckerHorizontal
     {
-        public static string CheckHorizontal(Button[,] btns, int tileIndex)
+        public static string CheckHorizontal(Button[,] btns, int tileIndex, InternalBoard ib, ref List<int> positions)
         {
             StringBuilder sb = new StringBuilder();
             int[] indicies = BoardHandler.getRowCol(tileIndex);
@@ -21,6 +24,7 @@ namespace Scrabble.Verification
                 }
                 else
                 {
+                    positions.Add((row * 15) + i);
                     sb.Append(btns[row, i].Text);
                 }
             }
@@ -33,6 +37,7 @@ namespace Scrabble.Verification
                 }
                 else
                 {
+                    positions.Add((row * 15) + i);
                     sb.Insert(0, btns[row, i].Text);
                 }
             }

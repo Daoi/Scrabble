@@ -7,6 +7,7 @@ namespace Scrabble.Game_Mechanics.Scoring
 
         public static int CaluclatePlacedTileScore(Button boardTile, LetterTile letterTile)
         {
+
             int tileValue = LetterValues.getLetterValue(letterTile.Text);
             string tileType = boardTile.Text;
             if (tileType == "" || string.Equals(tileType, "*"))
