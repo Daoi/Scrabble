@@ -90,6 +90,7 @@
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\InputBox.cs" />
     <Compile Include="Utility\ReverseString.cs" />
     <Compile Include="Verification\BoardCheckerHorizontal.cs" />
     <Compile Include="Verification\BoardCheckerVertical.cs" />

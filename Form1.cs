@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using Scrabble.Game_Modeling;
 using Scrabble.Verification;
+using Scrabble.Utility.MsgBox;
 
 namespace Scrabble
 {
@@ -66,6 +67,7 @@ namespace Scrabble
         //Dropping letter on board
         private void Button_DragDrop(object sender, DragEventArgs e)
         {
+            bool blankTile = false;
             Button btn = (Button)sender;//The tile the letter is being placed on
             int[] index = BoardHandler.getRowCol(int.Parse(btn.Tag.ToString()));
             
@@ -78,6 +80,22 @@ namespace Scrabble
             //Save premodified values
             boardAtTurnStart.Add(btn, btn.Text);
             handAtTurnStart.Add(currentTile, currentTile.Text);
+            
+            if(currentTile.Text == " ")
+            {
+                InputBox.SetLanguage(InputBox.Language.English);
+                DialogResult res = InputBox.ShowDialog("Select a letter for your tile:",
+                "Select a letter",   //Text message (mandatory), Title (optional)
+                InputBox.Icon.Information, //Set icon type (default info)
+                InputBox.Buttons.Ok, //Set buttons (default ok)
+                InputBox.Type.ComboBox, //Set type (default nothing)
+                new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+                               "N", "O", "P", "Q", "R","S", "T", "U", "V", "W", "X", "Y", "Z"}, //String field as ComboBox items (default null)
+                false, //Set visible in taskbar (default false)
+                new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold)); //Set font (default by system)
+                currentTile.Text = InputBox.ResultValue;
+                blankTile = true;
+            }
             
             //If it's a preimum tile, record the multiplier
             if (btn.Text.Equals("Double Word Score") || btn.Text.Equals("*"))
@@ -94,13 +112,15 @@ namespace Scrabble
             currentTile.SetBoardPosition(int.Parse(btn.Tag.ToString()));
             //Update board tile
             ib.addTile(new LetterTile(currentTile.Text, currentTile.GetBoardPosition()));
-            btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
+            
+            if (blankTile)
+                btn.Text = currentTile.Text;
+            else
+                btn.Text = e.Data.GetData(DataFormats.StringFormat).ToString();
+            
             btn.AllowDrop = false;
-            
-
-            
             placements.Add(int.Parse(btn.Tag.ToString()));
-            currentTile.Text = "";
+            currentTile.Text = " ";
         }
         //Dragging over a tile
         private void Button_DragEnter(object sender, DragEventArgs e)
@@ -316,5 +336,6 @@ namespace Scrabble
                                     "Selected tiles will turn blue. Exchanging tiles will end your turn.";
             }
        }
+
     }
 }
