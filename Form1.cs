@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Scrabble.Game_Modeling;
 using Scrabble.Verification;
 using Scrabble.Utility.MsgBox;
+using Scrabble.Game_Mechanics.Scoring;
 
 namespace Scrabble
 {
@@ -26,6 +27,7 @@ namespace Scrabble
         Dictionary<Button, string> boardAtTurnStart = new Dictionary<Button, string>();
         //The tile currently being manipulated by the player
         LetterTile currentTile;
+        List<string> preimumTilesThisTurn = new List<string>();
         int currentTileValue;
         string currentTileLetter;
         List<int> placements = new List<int>();
@@ -97,7 +99,7 @@ namespace Scrabble
                 blankTile = true;
             }
             
-            //If it's a preimum tile, record the multiplier
+            //If it's a preimum board tile, record the multiplier
             if (btn.Text.Equals("Double Word Score") || btn.Text.Equals("*"))
             {
                 scoreMultiplier *= 2;
@@ -106,8 +108,13 @@ namespace Scrabble
             {
                 scoreMultiplier *= 3;
             }
-            //Calculate value for placed tile
-            score += Game_Mechanics.Scoring.CalculateScore.CaluclatePlacedTileScore(btn, currentTile);
+            //Calculate value for premium tiles
+            if (btn.Text != "")
+            {
+                score += Game_Mechanics.Scoring.CalculateScore.CaluclatePlacedTileScore(btn, currentTile);
+                preimumTilesThisTurn.Add(currentTile.Text);
+
+            }
             //Potentially useless
             currentTile.SetBoardPosition(int.Parse(btn.Tag.ToString()));
             //Update board tile
@@ -120,7 +127,7 @@ namespace Scrabble
             
             btn.AllowDrop = false;
             placements.Add(int.Parse(btn.Tag.ToString()));
-            currentTile.Text = " ";
+            currentTile.Text = "";
         }
         //Dragging over a tile
         private void Button_DragEnter(object sender, DragEventArgs e)
@@ -189,7 +196,13 @@ namespace Scrabble
             }
             else//Turn succuesful, draw new tiles and save hand. Calculate Score. 
             {
+                List<char> letters = words.ToList();
                 //Scoring
+                foreach (string s in preimumTilesThisTurn)
+                {
+                    letters.Remove(char.Parse(s));
+                }
+                letters.ForEach(c => CalculateScore.CalculateNonPlacedTileScore(c));
                 currentPlayer.updateScore(score * scoreMultiplier);
 
                 MessageBox.Show("The following words were formed: " + words + $" For {score * scoreMultiplier} points", "Words formed and score");

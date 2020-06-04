@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Text;
+using System.Windows.Forms;
 
 namespace Scrabble.Game_Mechanics
 {
@@ -25,6 +26,9 @@ namespace Scrabble.Game_Mechanics
                 tiles[i] = letter;
                 Game.Decrement(letterFrequency, letter);
             }
+            StringBuilder sb = new StringBuilder();
+            letterBag.ForEach(lt => sb.Append(lt.Text + " "));
+            MessageBox.Show(sb.ToString());
             return tiles;
         }
     }

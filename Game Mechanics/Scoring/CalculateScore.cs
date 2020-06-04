@@ -26,6 +26,11 @@ namespace Scrabble.Game_Mechanics.Scoring
             return -1;
         }
 
+        public static int CalculateNonPlacedTileScore(char letterTile)
+        {
+            return LetterValues.getLetterValue(letterTile.ToString());
+        }
+
 
     }
 }
