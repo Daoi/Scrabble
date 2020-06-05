@@ -62,6 +62,19 @@ namespace Scrabble
         {
            return DrawTiles.drawTiles(count, letterFrequency, letterBag);
         }
+
+        public List<LetterTile> exchangeTiles(int count, List<LetterTile> exchangeTiles)
+        {
+            string[] letters = new string[exchangeTiles.Count];
+            List<LetterTile> newTiles = DrawTiles.exchangeTiles(count, letterBag);
+            for(int i = 0; i < exchangeTiles.Count; i++)
+            {
+                letters[i] = exchangeTiles[i].Text;
+            }
+            addTiles(letters);
+            return newTiles;
+        }
+
         //Add to game mechanics
         public void addTiles(string[] tiles)
         {

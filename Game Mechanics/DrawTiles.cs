@@ -31,5 +31,19 @@ namespace Scrabble.Game_Mechanics
             MessageBox.Show(sb.ToString());
             return tiles;
         }
+
+        public static List<LetterTile> exchangeTiles(int count, List<LetterTile> letterBag)
+        {
+            List<LetterTile> newTiles = new List<LetterTile>();
+            for(int i = 0; i < count; i++)
+            {
+                LetterTile tile = letterBag[rand.Next(letterBag.Count)];
+                newTiles.Add(tile);
+                letterBag.Remove(tile);
+
+            }
+
+            return newTiles;
+        }
     }
 }

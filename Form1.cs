@@ -7,6 +7,7 @@ using Scrabble.Game_Modeling;
 using Scrabble.Verification;
 using Scrabble.Utility.MsgBox;
 using Scrabble.Game_Mechanics.Scoring;
+using IronPython.Compiler.Ast;
 
 namespace Scrabble
 {
@@ -27,7 +28,7 @@ namespace Scrabble
         Dictionary<Button, string> boardAtTurnStart = new Dictionary<Button, string>();
         //The tile currently being manipulated by the player
         LetterTile currentTile;
-        List<string> preimumTilesThisTurn = new List<string>();
+        List<string> tilesThisTurn = new List<string>();
         int currentTileValue;
         string currentTileLetter;
         List<int> placements = new List<int>();
@@ -61,7 +62,8 @@ namespace Scrabble
         {
             LetterTile letterTile = sender as LetterTile;
             currentTile = letterTile;
-            currentTileLetter = letterTile.Text.ToString();
+            currentTileLetter = letterTile.Text;
+            //MessageBox.Show(currentTileLetter);
             currentTileValue = Game.getLetterValue(currentTileLetter);
             letterTile.DoDragDrop(letterTile.Text, DragDropEffects.Copy);
             
@@ -95,7 +97,7 @@ namespace Scrabble
                                "N", "O", "P", "Q", "R","S", "T", "U", "V", "W", "X", "Y", "Z"}, //String field as ComboBox items (default null)
                 false, //Set visible in taskbar (default false)
                 new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold)); //Set font (default by system)
-                currentTile.Text = InputBox.ResultValue;
+                currentTile.SetTileLetter(InputBox.ResultValue);
                 blankTile = true;
             }
             
@@ -109,12 +111,9 @@ namespace Scrabble
                 scoreMultiplier *= 3;
             }
             //Calculate value for premium tiles
-            if (btn.Text != "")
-            {
-                score += Game_Mechanics.Scoring.CalculateScore.CaluclatePlacedTileScore(btn, currentTile);
-                preimumTilesThisTurn.Add(currentTile.Text);
+            score += CalculateScore.CaluclatePlacedTileScore(btn, currentTile);
+            tilesThisTurn.Add(currentTile.Text);
 
-            }
             //Potentially useless
             currentTile.SetBoardPosition(int.Parse(btn.Tag.ToString()));
             //Update board tile
@@ -161,6 +160,7 @@ namespace Scrabble
         {
             score = 0;
             scoreMultiplier = 1;
+            tilesThisTurn.Clear();
             foreach (Button boardTile in boardAtTurnStart.Keys)
             {
                 boardTile.Text = boardAtTurnStart[boardTile];
@@ -198,11 +198,17 @@ namespace Scrabble
             {
                 List<char> letters = words.ToList();
                 //Scoring
-                foreach (string s in preimumTilesThisTurn)
+                foreach (string s in tilesThisTurn)
                 {
                     letters.Remove(char.Parse(s));
+
                 }
-                letters.ForEach(c => CalculateScore.CalculateNonPlacedTileScore(c));
+                letters.ForEach(c =>
+                { if (char.IsLetter(c)) {
+                        score += CalculateScore.CalculateNonPlacedTileScore(c);
+                    }; 
+                });
+                
                 currentPlayer.updateScore(score * scoreMultiplier);
 
                 MessageBox.Show("The following words were formed: " + words + $" For {score * scoreMultiplier} points", "Words formed and score");
@@ -219,6 +225,8 @@ namespace Scrabble
 
         public void EndTurn()
         {
+            //Clear Tracking
+            tilesThisTurn.Clear();
             //Update Scores
             lblPlayerOneScore.Text = playerOne.PlayerScore.ToString();
             lblPlayerOneScore.Text = playerTwo.PlayerScore.ToString();
@@ -309,8 +317,8 @@ namespace Scrabble
                 //No exchange done
                 if (exchangeTiles.Count == 0)
                 {
-                    tiles.ForEach(lt => lt.MouseDown += new MouseEventHandler(Button_MouseDown));
                     tiles.ForEach(lt => lt.MouseDown -= Button_MouseDownExchange);
+                    //tiles.ForEach(lt => lt.MouseDown += new MouseEventHandler(Button_MouseDown));
                     tiles.ForEach(lt => lt.BackColor = System.Drawing.SystemColors.Control);
                     lblExchange.Text = "";
                     btnEndTurn.Enabled = true;
@@ -318,13 +326,13 @@ namespace Scrabble
                     return;
                 }
                 //Draw tiles
-                string[] newTiles = currentGame.drawTiles(exchangeTiles.Count);
-                for (int i = 0; i < newTiles.Length; i++)
+                List<LetterTile> newTiles = currentGame.exchangeTiles(exchangeTiles.Count, exchangeTiles);
+                for (int i = 0; i < newTiles.Count; i++)
                 {
-                    exchangeTiles[i].Text = newTiles[i];
+                    exchangeTiles[i].SetTileLetter(newTiles[i].Text);
                 }
-                tiles.ForEach(lt => lt.MouseDown += new MouseEventHandler(Button_MouseDown));
                 tiles.ForEach(lt => lt.MouseDown -= Button_MouseDownExchange);
+                //tiles.ForEach(lt => lt.MouseDown += new MouseEventHandler(Button_MouseDown));
                 tiles.ForEach(lt => lt.Exchange = false);
                 exchanging = false;
                 btnEndTurn.Enabled = true;
