@@ -229,7 +229,7 @@ namespace Scrabble
             tilesThisTurn.Clear();
             //Update Scores
             lblPlayerOneScore.Text = playerOne.PlayerScore.ToString();
-            lblPlayerOneScore.Text = playerTwo.PlayerScore.ToString();
+            lblPlayerTwoScore.Text = playerTwo.PlayerScore.ToString();
             scoreMultiplier = 1;
             score = 0;
             //Save Player Hand
